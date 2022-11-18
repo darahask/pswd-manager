@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useAccount, useContract, useSigner } from "wagmi";
 import { abi } from "../artifacts/contracts/Pswd.sol/Pswd.json";
-import { DOC_ID_KEY, PSWD_CONTRACT_ADDRESS, SPINNER } from "../constants";
+import { PSWD_CONTRACT_ADDRESS, SPINNER } from "../constants";
 import { authenticateCeramic } from "../scripts/ceramic";
 import {
   createData,
@@ -9,6 +9,7 @@ import {
   loadData,
   updateData,
 } from "../scripts/data";
+import { getStoredDocID, setStoredDocID } from "../scripts/storage";
 
 export default function Home() {
   let domainRef = useRef();
@@ -39,7 +40,7 @@ export default function Home() {
     }
 
     let token = (await pswdContract.ownerToToken(address)).toString();
-    let docId = localStorage.getItem(DOC_ID_KEY);
+    let docId = getStoredDocID(address);
     try {
       if (token !== "0") {
         if (docId === null) {
@@ -47,18 +48,18 @@ export default function Home() {
             "Doc ID is not found on local storage please enter the doc id otherwise a new docid will be created and the old data is lost encrypted"
           );
           if (docId) {
-            localStorage.setItem(DOC_ID_KEY, docId);
+            setStoredDocID(address, docId);
           } else {
             let data = {};
             data[domainname] = [{ username, password }];
             docId = await createData(data, getAccessControlConditions(token));
-            localStorage.setItem(DOC_ID_KEY, docId);
+            setStoredDocID(address, docId);
             alert(
-              `Doc ID saved into local storage of this browser, please save this doc id for reference ${docId}`
+              `Doc ID is saved in the local storage of this browser, please save this doc id to retrieve in case cookies are cleared ${docId}`
             );
           }
         } else {
-          let data = await loadData();
+          let data = await loadData(address);
           let list = data[domainname];
           if (list) {
             list.push({
@@ -72,8 +73,8 @@ export default function Home() {
               password,
             });
           }
-          await updateData(data, getAccessControlConditions(token));
-          alert("Saved and encrypted the credentials");
+          await updateData(data, getAccessControlConditions(token), address);
+          alert("Encrypted and saved the credentials");
         }
       } else {
         let mintTxn = await pswdContract.singleMint();
@@ -82,27 +83,22 @@ export default function Home() {
         let data = {};
         data[domainname] = [{ username, password }];
         docId = await createData(data, getAccessControlConditions(token));
-        localStorage.setItem(DOC_ID_KEY, docId);
+        setStoredDocID(address, docId);
         alert(
-          `Doc ID saved into local storage of this browser, please save this doc id for reference ${docId}`
+          `Doc ID is saved in the local storage of this browser, please save this doc id to retrieve in case cookies are cleared ${docId}`
         );
       }
     } catch (err) {
       reset();
       e.target.innerHTML = "Save";
-      if(err.errorCode === 'not_authorized'){
-        let docId = prompt(
-          "Doc ID on local storage is wrong please enter the doc id otherwise the old data is lost encrypted"
+      if (err.errorCode === "not_authorized") {
+        alert("Not authorised to access the doc please change the account");
+      } else {
+        alert(
+          "There has been some error please try again and also check the internet connectivity"
         );
-        if (docId) {
-          localStorage.setItem(DOC_ID_KEY, docId);
-        }else{
-          localStorage.removeItem(DOC_ID_KEY);
-        }
-      }else {
-        alert("There has been some error please try again and check if there is internet connectivity");
       }
-      return
+      return;
     }
     reset();
     e.target.innerHTML = "Save";

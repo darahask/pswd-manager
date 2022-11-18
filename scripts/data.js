@@ -6,6 +6,7 @@ import {
   updateDocument
 } from "./ceramic";
 import client from "./lit";
+import { getStoredDocID } from "./storage";
 
 function getAccessControlConditions(tokenId) {
   return [
@@ -23,8 +24,8 @@ function getAccessControlConditions(tokenId) {
   ];
 }
 
-async function loadData() {
-  let docId = localStorage.getItem(DOC_ID_KEY);
+async function loadData(address) {
+  let docId = getStoredDocID(address)
   if (!docId) return;
   let doc = await loadDocument(docId);
   const decryptedDoc = await client.decryptString(
@@ -35,8 +36,8 @@ async function loadData() {
   return JSON.parse(decryptedDoc);
 }
 
-async function updateData(content, conditions) {
-  let docId = localStorage.getItem(DOC_ID_KEY);
+async function updateData(content, conditions, address) {
+  let docId = getStoredDocID(address);
   let str = JSON.stringify(content);
   const { encryptedFile, encryptedSymmetricKey } = await client.encryptString(
     str,

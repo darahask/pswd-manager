@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
+import { useAccount } from "wagmi";
 import { SPINNER } from "../constants";
 import { loadData } from "../scripts/data";
 
 export default function Show() {
+  let { address } = useAccount();
   let [key, setKey] = useState("");
   let [data, setData] = useState();
   let [cred, setCred] = useState("");
@@ -11,20 +13,21 @@ export default function Show() {
   let spinner = useRef();
 
   let load = async () => {
-    spinner.current.innerHTML = SPINNER;
+    let spin = spinner.current;
+    if (spin) spin.innerHTML = SPINNER;
     let data;
     try {
-      data = await loadData();
+      data = await loadData(address);
     } catch {
-      spinner.current.innerHTML = "";
+      if (spin) spin.innerHTML = "";
     }
-    spinner.current.innerHTML = "";
+    if (spin) spin.innerHTML = "";
     setData(data);
   };
 
   useEffect(() => {
     load();
-  }, []);
+  }, [address]);
 
   return (
     <div className="dark:bg-gray-900">

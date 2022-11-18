@@ -14,7 +14,7 @@ const SPINNER               = `<svg
                                     cy="12"
                                     r="10"
                                     stroke="currentColor"
-                                    stroke-Width="4"
+                                    stroke-width="4"
                                     ></circle>
                                     <path
                                     class="opacity-75"
