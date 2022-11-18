@@ -1,13 +1,14 @@
-# Sample Hardhat Project
+# Password Manager
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+- URL: https://pswd-manager.vercel.app/
 
-Try running some of the following tasks:
-
+## Setup
+* Create a .env file in root directory
+* Add MUMBAI_URL and PRIVATE_KEY fields
+* Run the below commands for contract deployment
 ```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
+npm install
 npx hardhat run scripts/deploy.js
 ```
+* Change the values in constants.js accordingly
+* Run ```npm run dev``` to launch frontend
