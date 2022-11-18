@@ -4,8 +4,8 @@ import {
   createDocument,
   loadDocument,
   updateDocument
-} from "./Ceramic";
-import client from "./Lit";
+} from "./ceramic";
+import client from "./lit";
 
 function getAccessControlConditions(tokenId) {
   return [

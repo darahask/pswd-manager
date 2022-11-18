@@ -12,7 +12,7 @@ class Lit {
     this.litNodeClient = client;
   }
 
-  async encryptString(str, accessControlConditionsNFT) {
+  async encryptString(str, accessControlConditions) {
     if (!this.litNodeClient) {
       await this.connect();
     }
@@ -20,7 +20,7 @@ class Lit {
     const { encryptedString, symmetricKey } = await LitJsSdk.encryptString(str);
 
     const encryptedSymmetricKey = await this.litNodeClient.saveEncryptionKey({
-      accessControlConditions: accessControlConditionsNFT,
+      accessControlConditions: accessControlConditions,
       symmetricKey,
       authSig,
       chain,
@@ -38,14 +38,14 @@ class Lit {
   async decryptString(
     encryptedStr,
     encryptedSymmetricKey,
-    accessControlConditionsNFT
+    accessControlConditions
   ) {
     if (!this.litNodeClient) {
       await this.connect();
     }
     const authSig = await LitJsSdk.checkAndSignAuthMessage({ chain });
     const symmetricKey = await this.litNodeClient.getEncryptionKey({
-      accessControlConditions: accessControlConditionsNFT,
+      accessControlConditions: accessControlConditions,
       toDecrypt: encryptedSymmetricKey,
       chain,
       authSig,

@@ -5,7 +5,7 @@ export default function Navbar() {
   return (
     <>
       <nav className="bg-black">
-        <div className="mx-auto lg:w-2/3 sm:w-1/3">
+        <div className="mx-auto lg:w-2/3">
           <div className="flex h-16 items-center justify-between">
             <div className="flex">
               <div
