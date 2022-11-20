@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useAccount, useContract, useSigner } from "wagmi";
 import { abi } from "../artifacts/contracts/Pswd.sol/Pswd.json";
 import Spinner from "../components/Spinner";
-import { PSWD_CONTRACT_ADDRESS, SPINNER } from "../constants";
+import { PSWD_CONTRACT_ADDRESS } from "../constants";
 import { authenticateCeramic } from "../scripts/ceramic";
 import {
   createData,

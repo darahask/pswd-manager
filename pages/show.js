@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useAccount } from "wagmi";
 import Spinner from "../components/Spinner";
-import { SPINNER } from "../constants";
 import { loadData } from "../scripts/data";
 
 export default function Show() {
@@ -17,6 +16,7 @@ export default function Show() {
     try {
       data = await loadData(address);
       setData(data);
+      setLoading(0);
     } catch {
       setLoading(0);
     }
