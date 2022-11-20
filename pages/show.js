@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useAccount } from "wagmi";
+import Spinner from "../components/Spinner";
 import { SPINNER } from "../constants";
 import { loadData } from "../scripts/data";
 
@@ -9,20 +10,16 @@ export default function Show() {
   let [data, setData] = useState();
   let [cred, setCred] = useState("");
   let [domain, setDomain] = useState("");
-
-  let spinner = useRef();
+  let [loading, setLoading] = useState(1);
 
   let load = async () => {
-    let spin = spinner.current;
-    if (spin) spin.innerHTML = SPINNER;
     let data;
     try {
       data = await loadData(address);
+      setData(data);
     } catch {
-      if (spin) spin.innerHTML = "";
+      setLoading(0);
     }
-    if (spin) spin.innerHTML = "";
-    setData(data);
   };
 
   let togglePassword = (e, i) => {
@@ -75,7 +72,7 @@ export default function Show() {
                     </button>
                   ))
               ) : (
-                <div className="w-full" ref={spinner}></div>
+                <>{loading ? <Spinner></Spinner> : <></>}</>
               )}
             </div>
             <div className="flex flex-col basis-2/3 overscroll-contain">

@@ -1,6 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAccount, useContract, useSigner } from "wagmi";
 import { abi } from "../artifacts/contracts/Pswd.sol/Pswd.json";
+import Spinner from "../components/Spinner";
 import { PSWD_CONTRACT_ADDRESS, SPINNER } from "../constants";
 import { authenticateCeramic } from "../scripts/ceramic";
 import {
@@ -13,6 +14,7 @@ import genPassword from "../scripts/passgen";
 import { getStoredDocID, setStoredDocID } from "../scripts/storage";
 
 export default function Home() {
+  let [load, setLoad] = useState(0);
   let domainRef = useRef();
   let usernameRef = useRef();
   let passwordRef = useRef();
@@ -43,12 +45,14 @@ export default function Home() {
   };
 
   let saveCredentials = async (e) => {
-    e.target.innerHTML = SPINNER;
+    setLoad(1);
     let domainname = domainRef.current.value.trim();
     let username = usernameRef.current.value.trim();
     let password = passwordRef.current.value.trim();
     if (!(domainname && username && password)) {
-      alert("Please enter all the details");
+      alert("Please fill all the fields");
+      reset();
+      setLoad(0);
       return;
     }
 
@@ -103,7 +107,7 @@ export default function Home() {
       }
     } catch (err) {
       reset();
-      e.target.innerHTML = "Save";
+      setLoad(0);
       if (err.errorCode === "not_authorized") {
         alert("Not authorised to access the doc please change the account");
       } else {
@@ -114,11 +118,15 @@ export default function Home() {
       return;
     }
     reset();
-    e.target.innerHTML = "Save";
+    setLoad(0);
   };
 
   useEffect(() => {
-    authenticateCeramic(address);
+    try {
+      authenticateCeramic(address);
+    } catch (e) {
+      console.log(e);
+    }
   }, [address]);
 
   return (
@@ -194,10 +202,9 @@ export default function Home() {
               </div>
               <button
                 onClick={saveCredentials}
-                style={{ backgoundColor: "#2563EB" }}
                 className="w-full text-white focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-black"
               >
-                Save
+                {load ? <Spinner></Spinner> : "Save"}
               </button>
               <p
                 onClick={() => (passwordRef.current.value = genPassword())}
