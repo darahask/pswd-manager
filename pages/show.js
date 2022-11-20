@@ -25,6 +25,22 @@ export default function Show() {
     setData(data);
   };
 
+  let togglePassword = (e, i) => {
+    const password = document.querySelector(`#pass-${i}`);
+
+    if (password.type === "password") {
+      e.target.innerHTML = "hide";
+      password.type = "text";
+    } else {
+      e.target.innerHTML = "show";
+      password.type = "password";
+    }
+  };
+
+  let copyValue = (val) => {
+    navigator.clipboard.writeText(val);
+  };
+
   useEffect(() => {
     load();
   }, [address]);
@@ -36,12 +52,12 @@ export default function Show() {
           <div className="flex flex-row">
             <div className="flex flex-col basis-1/3 overscroll-contain mr-2">
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white py-2 pl-1">
-                Domain
+                Domains
               </h1>
               <input
                 type="text"
                 onChange={(e) => setDomain(e.target.value)}
-                className="bg-gray-50 mb-2 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className="bg-gray-50 focus:border mb-2 text-sm rounded-lg focus:outline-none w-full p-2 bg-gray-700 placeholder-gray-400 text-white focus:border-blue-500"
                 placeholder="company.com"
               ></input>
               {data ? (
@@ -53,7 +69,7 @@ export default function Show() {
                       onClick={() => setKey(val)}
                       style={{ backgoundColor: "#2563EB" }}
                       className="w-full text-white focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium 
-                               mb-2 rounded-lg text-sm px-5 py-2.5 text-center bg-black"
+                               mb-2 rounded text-sm px-5 py-2.5 text-center bg-black"
                     >
                       {val}
                     </button>
@@ -69,8 +85,8 @@ export default function Show() {
               <input
                 type="text"
                 onChange={(e) => setCred(e.target.value)}
-                className="bg-gray-50 mb-2 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="credentials"
+                className="bg-gray-50 focus:border mb-2 text-sm rounded-lg focus:outline-none w-full p-2 bg-gray-700 placeholder-gray-400 text-white focus:border-blue-500"
+                placeholder="username/password"
               ></input>
               {data && data[key] ? (
                 data[key]
@@ -80,22 +96,42 @@ export default function Show() {
                   })
                   .map((val, i) => (
                     <div key={i}>
-                      <div className="mb-1">
+                      <div className="relative w-full mb-1">
+                        <div className="absolute inset-y-0 right-0 flex items-center px-2">
+                          <label
+                            onClick={(e) => copyValue(val.username)}
+                            className="bg-gray-300 hover:bg-gray-400 rounded px-2 py-1 text-sm text-gray-600 cursor-pointer font-mono"
+                          >
+                            copy
+                          </label>
+                        </div>
                         <input
-                          className="text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white hover:cursor-pointer"
+                          className="text-sm appearance-none w-full rounded w-full py-3 px-3 leading-tight bg-gray-700 focus:outline-none text-white pr-16"
                           value={val.username}
                           readOnly
                         ></input>
                       </div>
-                      <div className="mb-1">
+                      <div className="relative w-full mb-2">
+                        <div className="absolute inset-y-0 right-14 flex items-center px-2">
+                          <label
+                            onClick={(e) => copyValue(val.password)}
+                            className="bg-gray-300 hover:bg-gray-400 rounded px-2 py-1 text-sm text-gray-600 cursor-pointer font-mono"
+                          >
+                            copy
+                          </label>
+                        </div>
+                        <div className="absolute inset-y-0 right-0 flex items-center px-2">
+                          <label
+                            onClick={(e) => togglePassword(e, i)}
+                            className="bg-gray-300 hover:bg-gray-400 rounded px-2 py-1 text-sm text-gray-600 cursor-pointer font-mono"
+                          >
+                            show
+                          </label>
+                        </div>
                         <input
+                          className="text-sm appearance-none rounded w-full py-3 px-3 leading-tight bg-gray-700 focus:outline-none text-white pr-16"
+                          id={`pass-${i}`}
                           type="password"
-                          onClick={(e) => {
-                            if (e.target.type === "password") {
-                              e.target.type = "text";
-                            } else e.target.type = "password";
-                          }}
-                          className="text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white hover:cursor-pointer"
                           value={val.password}
                           readOnly
                         ></input>

@@ -9,6 +9,7 @@ import {
   loadData,
   updateData,
 } from "../scripts/data";
+import genPassword from "../scripts/passgen";
 import { getStoredDocID, setStoredDocID } from "../scripts/storage";
 
 export default function Home() {
@@ -27,6 +28,18 @@ export default function Home() {
     domainRef.current.value = "";
     usernameRef.current.value = "";
     passwordRef.current.value = "";
+  };
+
+  let togglePassword = (e) => {
+    const password = document.querySelector("#password");
+
+    if (password.type === "password") {
+      e.target.innerHTML = "hide";
+      password.type = "text";
+    } else {
+      e.target.innerHTML = "show";
+      password.type = "password";
+    }
   };
 
   let saveCredentials = async (e) => {
@@ -155,7 +168,15 @@ export default function Home() {
                   required=""
                 ></input>
               </div>
-              <div>
+              <div className="relative w-full">
+                <div className="absolute inset-y-0 right-0 top-7 flex items-center px-2">
+                  <label
+                    onClick={(e) => togglePassword(e)}
+                    className="bg-gray-300 hover:bg-gray-400 rounded px-2 py-1 text-sm text-gray-600 cursor-pointer font-mono"
+                  >
+                    show
+                  </label>
+                </div>
                 <label
                   htmlFor="password"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -165,7 +186,6 @@ export default function Home() {
                 <input
                   ref={passwordRef}
                   type="password"
-                  name="password"
                   id="password"
                   placeholder="••••••••"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -179,6 +199,12 @@ export default function Home() {
               >
                 Save
               </button>
+              <p
+                onClick={() => (passwordRef.current.value = genPassword())}
+                className="text-sm ml-1 text-blue-600 hover:cursor-pointer"
+              >
+                Click here to generate password...
+              </p>
             </form>
           </div>
         </div>

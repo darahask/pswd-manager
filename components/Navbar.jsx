@@ -5,14 +5,14 @@ export default function Navbar() {
   return (
     <>
       <nav className="bg-black">
-        <div className="mx-auto lg:w-2/3">
+        <div className="mx-auto lg:w-2/3 px-3">
           <div className="flex h-16 items-center justify-between">
             <div className="flex">
               <div
                 className="bg-zinc-800 text-white px-3 py-2 rounded-md text-md font-medium"
                 aria-current="page"
               >
-                Password Manager
+                Lit Password Manager
               </div>
               <Link
                 href="/"

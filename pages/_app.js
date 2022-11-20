@@ -9,6 +9,7 @@ import {
   midnightTheme,
   RainbowKitProvider,
 } from "@rainbow-me/rainbowkit";
+import Head from "next/head";
 
 const { chains, provider } = configureChains(
   [chain.polygonMumbai],
@@ -28,14 +29,21 @@ const wagmiClient = createClient({
 
 function MyApp({ Component, pageProps }) {
   return (
-    // <div className="min-h-full">
-    <WagmiConfig client={wagmiClient}>
-      <RainbowKitProvider theme={midnightTheme()} chains={chains}>
-        <Navbar></Navbar>
-        <Component {...pageProps} />
-      </RainbowKitProvider>
-    </WagmiConfig>
-    // </div>
+    <>
+      <Head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0"
+        ></meta>
+      </Head>
+      <WagmiConfig client={wagmiClient}>
+        <RainbowKitProvider theme={midnightTheme()} chains={chains}>
+          <Navbar></Navbar>
+          <Component {...pageProps} />
+        </RainbowKitProvider>
+      </WagmiConfig>
+    </>
   );
 }
 
